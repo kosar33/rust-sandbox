@@ -163,7 +163,7 @@ app.delete('/api/projects/:name', (req, res) => {
 });
 
 server.listen(3000, '0.0.0.0', () => {
-    console.log(`Сервер управления запущен на http://localhost:3000`);
+    console.log(`Сервер управления запущен на http://127.0.0.1:3000`);
 });
 EOF
 
@@ -508,7 +508,7 @@ use std::net::SocketAddr;
 async fn main() {
     let app = Router::new().route("/", get(|| async { "Привет! Этот бэкенд на Rust запущен прямо из браузера на телефоне!" }));
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
-    println!("Сервер работает на http://localhost:8080");
+    println!("Сервер работает на http://127.0.0.1:8080");
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }`;
