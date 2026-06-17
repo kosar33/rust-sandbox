@@ -337,7 +337,7 @@ use std::net::SocketAddr;
 async fn main() {
     let app = Router::new().route("/", get(|| async { "Привет! Бэкенд на Rust запущен!" }));
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
-    println!("Сервер работает на http://localhost:8080");
+    println!("Сервер работает на http://127.0.0.1:8080");
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }`;
