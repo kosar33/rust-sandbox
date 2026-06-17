@@ -3,7 +3,7 @@ echo "=== 1. Установка системных зависимостей ==="
 pkg update && pkg upgrade -y
 pkg install nodejs rust build-essential curl -y
 
-# 2. Выбор папки (создаст уникальное имя, например rust-sandbox-1)
+# 2. Выбор папки
 echo "=== 2. Создание рабочей директории ==="
 DIR="rust-sandbox"
 COUNTER=1
@@ -167,7 +167,7 @@ server.listen(3000, '0.0.0.0', () => {
 });
 EOF
 
-# 4. Скачивание зависимостей стилей и подсветки в public/ (для полной оффлайн работы)
+# 4. Скачивание зависимостей стилей и подсветки в public/
 echo "=== 4. Офлайн-сохранение библиотек (Tailwind & Prism) ==="
 mkdir -p public
 curl -sSL -o public/tailwind.js https://cdn.tailwindcss.com
