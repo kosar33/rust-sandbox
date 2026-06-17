@@ -189,7 +189,6 @@ cat << 'EOF' > public/index.html
     <script src="/prism-rust.js"></script>
     <script src="/prism-toml.js"></script>
     <style>
-        /* Синхронизация шрифтов, отступов и высоты строк для наложения подсветки */
         .editor-area, .editor-pre {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
             font-size: 11px !important;
@@ -236,19 +235,16 @@ cat << 'EOF' > public/index.html
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
         <div class="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-700 relative overflow-hidden">
             
-            <!-- Редактор main.rs (Подсветка + Поле ввода) -->
             <div id="containerMain" class="flex-1 relative overflow-hidden">
                 <pre id="preMain" class="editor-pre absolute inset-0 bg-gray-950 text-yellow-100 pointer-events-none overflow-auto"><code id="codeMain" class="language-rust"></code></pre>
                 <textarea id="areaMain" class="editor-area absolute inset-0 bg-transparent text-transparent caret-white outline-none resize-none overflow-auto" spellcheck="false" placeholder="Код main.rs"></textarea>
             </div>
 
-            <!-- Редактор Cargo.toml (Подсветка + Поле ввода) -->
             <div id="containerCargo" class="hidden flex-1 relative overflow-hidden">
                 <pre id="preCargo" class="editor-pre absolute inset-0 bg-gray-950 text-yellow-100 pointer-events-none overflow-auto"><code id="codeCargo" class="language-toml"></code></pre>
                 <textarea id="areaCargo" class="editor-area absolute inset-0 bg-transparent text-transparent caret-white outline-none resize-none overflow-auto" spellcheck="false" placeholder="Конфигурация Cargo.toml"></textarea>
             </div>
             
-            <!-- Вкладка Импорта -->
             <div id="areaImportBlock" class="hidden flex-1 flex flex-col bg-gray-900 p-3 gap-2 overflow-hidden">
                 <div class="flex justify-between items-center shrink-0 gap-2">
                     <p class="text-[10px] text-gray-400 leading-tight">Вставьте ответ нейросети (с разделителями === Cargo.toml === и === main.rs ===):</p>
@@ -299,7 +295,6 @@ cat << 'EOF' > public/index.html
 
         let loadedProjects = {};
 
-        // Синхронизация и подсветка текста
         function syncHighlight(textarea, codeElem, preElem) {
             let text = textarea.value;
             if (text[text.length - 1] === "\n") {
@@ -530,9 +525,6 @@ tokio = { version = "1", features = ["full"] }
         areaMain.value = defaultCode;
         areaCargo.value = defaultCargo;
 
-        syncHighlight(areaMain, codeMain, preMain);
-        syncHighlight(areaCargo, codeCargo, preCargo);
-
         loadProjectsList();
     </script>
 </body>
@@ -565,14 +557,26 @@ use std::net::SocketAddr;
 #[tokio::main]
 async fn main() {
     let app = Router::new().route("/", get(|| async { "Hello!" }));
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
+    let addr = \$env(SocketAddr::from(([0, 0, 0, 0], 8080)));
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 EOF
 
 cd rust-workspace
-cargo build
+
+# Запускаем сборку Rust с автоматическим обходом ошибки ETXTBSY (Text file busy) на Android
+echo "Запуск сборки Rust..."
+if ! cargo build; then
+    echo "Диск занят системой Android (os error 26). Автоматический повтор в 1 поток через 2 секунды..."
+    sleep 2
+    if ! cargo build -j 1; then
+        echo "Повторный сбой. Пробуем финальный перезапуск компилятора через 2 секунды..."
+        sleep 2
+        cargo build -j 1
+    fi
+fi
+
 cd ..
 
 echo ""
