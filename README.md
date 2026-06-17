@@ -12,7 +12,7 @@
 pkg install curl -y && curl -# -L https://raw.githubusercontent.com/kosar33/rust-sandbox/main/install.sh -o install.sh && bash install.sh && rm install.sh
 ```
 
-*Если загрузка установщика через curl не начинается, у вас нет доступа к серверам github по каким либо причинам 🌝.
+*Если загрузка установщика через curl не начинается, у вас нет доступа к серверам github по каким либо причинам 🌝.*
 
 ---
 
