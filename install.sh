@@ -3,7 +3,7 @@ echo "=== 1. Установка системных зависимостей ==="
 pkg update && pkg upgrade -y
 pkg install nodejs rust build-essential curl -y
 
-# 2. Выбор папки
+# 2. Выбор папки (создаст уникальное имя, например rust-sandbox-1)
 echo "=== 2. Создание рабочей директории ==="
 DIR="rust-sandbox"
 COUNTER=1
@@ -12,6 +12,7 @@ while [ -d "$DIR" ]; do
     COUNTER=$((COUNTER+1))
 done
 mkdir "$DIR" && cd "$DIR"
+echo "Создана папка: $DIR"
 
 # 3. Файлы Node.js
 cat << 'EOF' > package.json
@@ -525,6 +526,9 @@ tokio = { version = "1", features = ["full"] }
         areaMain.value = defaultCode;
         areaCargo.value = defaultCargo;
 
+        syncHighlight(areaMain, codeMain, preMain);
+        syncHighlight(areaCargo, codeCargo, preCargo);
+
         loadProjectsList();
     </script>
 </body>
@@ -557,7 +561,7 @@ use std::net::SocketAddr;
 #[tokio::main]
 async fn main() {
     let app = Router::new().route("/", get(|| async { "Hello!" }));
-    let addr = \$env(SocketAddr::from(([0, 0, 0, 0], 8080)));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
