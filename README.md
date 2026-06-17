@@ -9,7 +9,7 @@
 Для моментального развертывания проекта со всеми зависимостями скопируйте в Termux следующую команду:
 
 ```bash
-pkg install curl -y && curl -sSL https://raw.githubusercontent.com/kosar33/rust-sandbox/main/install.sh | bash
+pkg install curl -y && curl -# -L https://raw.githubusercontent.com/kosar33/rust-sandbox/main/install.sh -o install.sh && bash install.sh && rm install.sh
 ```
 
 ---
